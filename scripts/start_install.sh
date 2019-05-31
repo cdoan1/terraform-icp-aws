@@ -87,9 +87,15 @@ fi
 
 docker pull hashicorp/terraform:0.11.14
 
+# DEPLOY_REPO=https://github.com/ibm-cloud-architecture/terraform-module-icp-deploy.git
+# CUSTOM_BRANCH=3.1.1
+
+DEPLOY_REPO=https://github.com/cdoan1/terraform-module-icp-deploy.git
+CUSTOM_BRANCH=support-email-username
+
 cd /tmp/icp-deploy
-docker run -v `pwd`:/deploy -w=/deploy --entrypoint=git hashicorp/terraform:0.11.14 clone https://github.com/ibm-cloud-architecture/terraform-module-icp-deploy.git
-docker run -v `pwd`:/deploy -w=/deploy/terraform-module-icp-deploy --entrypoint=git hashicorp/terraform:0.11.14 checkout 3.1.1
+docker run -v `pwd`:/deploy -w=/deploy --entrypoint=git hashicorp/terraform:0.11.14 clone $DEPLOY_REPO
+docker run -v `pwd`:/deploy -w=/deploy/terraform-module-icp-deploy --entrypoint=git hashicorp/terraform:0.11.14 checkout $CUSTOM_BRANCH
 
 # write the terraform.tfvars
 ${awscli} s3 cp s3://${s3_config_bucket}/terraform.tfvars terraform-module-icp-deploy/terraform.tfvars
