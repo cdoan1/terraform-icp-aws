@@ -104,7 +104,6 @@ resource "aws_instance" "bastion" {
   ))}"
   user_data = <<EOF
 #cloud-config
-fqdn: ${format("${var.instance_name}-bastion%02d", count.index + 1)}.${random_id.clusterid.hex}.${var.private_domain}
 users:
 - default
 - name: icpdeploy
@@ -205,7 +204,6 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn:  ${format("${var.instance_name}-master%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -277,7 +275,6 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-proxy%02d", count.index + 1)}.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -347,7 +344,6 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-management%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -417,7 +413,6 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-va%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -490,7 +485,6 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-worker%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
