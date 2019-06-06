@@ -274,3 +274,8 @@ variable "disabled_management_services" {
   type        = "list"
   default     = ["istio", "vulnerability-advisor", "storage-glusterfs", "storage-minio"]
 }
+
+variable "kubelet_nodename" {
+  default = "fqdn"
+  description = "fqdn | nodename"
+}

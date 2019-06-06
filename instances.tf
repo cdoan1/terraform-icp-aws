@@ -104,7 +104,7 @@ resource "aws_instance" "bastion" {
   ))}"
   user_data = <<EOF
 #cloud-config
-fqdn: ${format("${var.instance_name}-bastion%02d", count.index + 1)}.${random_id.clusterid.hex}.${var.private_domain}
+#fqdn: ${format("${var.instance_name}-bastion%02d", count.index + 1)}.${random_id.clusterid.hex}.${var.private_domain}
 users:
 - default
 - name: icpdeploy
@@ -180,6 +180,7 @@ write_files:
   encoding: b64
   content: ${base64encode(file("${path.module}/scripts/bootstrap-node.sh"))}
 runcmd:
+- hostnamectl set-hostname $(curl http://169.254.169.254/2016-09-02/meta-data/local-hostname).ec2.internal
 - /tmp/bootstrap-node.sh -c ${aws_s3_bucket.icp_config_backup.id} -s "bootstrap.sh functions.sh ${count.index == 0 ? "start_install.sh" : ""} ${count.index == 0 && var.enable_autoscaling ? "create_client_cert.sh" : ""}"
 - /tmp/icp_scripts/bootstrap.sh ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdx 
 ${var.bastion["nodes"] == 0 && count.index == 0 ? "
@@ -205,7 +206,7 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn:  ${format("${var.instance_name}-master%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
+#fqdn:  ${format("${var.instance_name}-master%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -267,6 +268,7 @@ write_files:
   encoding: b64
   content: ${base64encode(file("${path.module}/scripts/bootstrap-node.sh"))}
 runcmd:
+- hostnamectl set-hostname $(curl http://169.254.169.254/2016-09-02/meta-data/local-hostname).ec2.internal
 - /tmp/bootstrap-node.sh -c ${aws_s3_bucket.icp_config_backup.id} -s "bootstrap.sh"
 - /tmp/icp_scripts/bootstrap.sh ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdx 
 users:
@@ -277,7 +279,7 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-proxy%02d", count.index + 1)}.${random_id.clusterid.hex}.${var.private_domain}
+#fqdn: ${format("${var.instance_name}-proxy%02d", count.index + 1)}.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -337,6 +339,7 @@ write_files:
   encoding: b64
   content: ${base64encode(file("${path.module}/scripts/bootstrap-node.sh"))}
 runcmd:
+- hostnamectl set-hostname $(curl http://169.254.169.254/2016-09-02/meta-data/local-hostname).ec2.internal
 - /tmp/bootstrap-node.sh -c ${aws_s3_bucket.icp_config_backup.id} -s "bootstrap.sh"
 - /tmp/icp_scripts/bootstrap.sh ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdx 
 users:
@@ -347,7 +350,7 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-management%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
+#fqdn: ${format("${var.instance_name}-management%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -407,6 +410,7 @@ write_files:
   encoding: b64
   content: ${base64encode(file("${path.module}/scripts/bootstrap-node.sh"))}
 runcmd:
+- hostnamectl set-hostname $(curl http://169.254.169.254/2016-09-02/meta-data/local-hostname).ec2.internal
 - /tmp/bootstrap-node.sh -c ${aws_s3_bucket.icp_config_backup.id} -s "bootstrap.sh"
 - /tmp/icp_scripts/bootstrap.sh ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdx 
 users:
@@ -417,7 +421,7 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-va%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
+#fqdn: ${format("${var.instance_name}-va%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
@@ -480,6 +484,7 @@ write_files:
   encoding: b64
   content: ${base64encode(file("${path.module}/scripts/bootstrap-node.sh"))}
 runcmd:
+- hostnamectl set-hostname $(curl http://169.254.169.254/2016-09-02/meta-data/local-hostname).ec2.internal
 - /tmp/bootstrap-node.sh -c ${aws_s3_bucket.icp_config_backup.id} -s "bootstrap.sh"
 - /tmp/icp_scripts/bootstrap.sh ${local.docker_package_uri != "" ? "-p ${local.docker_package_uri}" : "" } -d /dev/xvdx 
 users:
@@ -490,7 +495,7 @@ users:
   shell: /bin/bash
   ssh-authorized-keys:
   - ${tls_private_key.installkey.public_key_openssh}
-fqdn: ${format("${var.instance_name}-worker%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
+#fqdn: ${format("${var.instance_name}-worker%02d", count.index + 1) }.${random_id.clusterid.hex}.${var.private_domain}
 manage_resolv_conf: true
 resolv_conf:
   nameservers: [ ${cidrhost(element(aws_subnet.icp_private_subnet.*.cidr_block, count.index), 2)}]
